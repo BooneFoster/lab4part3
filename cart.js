@@ -52,15 +52,19 @@ function getCart($email) {
 function deleteItem($id) {
 
     //TODO complete implementation using the product id
-    //alert("cart.js/deleteItem() is not implemented")
     $.ajax({
-        url: Url + 'Cart/'+ $id,
+        url: Url+'Cart/'+$id,
         type: 'delete',
+        dataType: 'json',
+        data: JSON.stringify({"product_id":$id}),  
+        contentType: 'text/plain',
+
         success: function (data) {
-            alert("item was successfully deleted");
+         //   deleteItem(data)
+            alert("Item deleted.")
         },
-        error: function (data) {
-            alert("Error while fetching data.");
+        error: function (jqXHR, textStatus, errorThrown) { //on error, throw an alert
+            alert("Error while fetching data."+textStatus+errorThrown);
         }
     });
 }
@@ -68,19 +72,18 @@ function deleteItem($id) {
 function checkOut() {
 
     //TODO complete implementation
-    //alert("cart.js/checkOut() is not implemented")
     $.ajax({
-        url: Url + 'Cart',
+        url: Url+'Cart',
         type: 'put',
         dataType: 'json',
-        data: {"email":email},
+        data: JSON.stringify({"email":$('#email').val()}),  
         contentType: 'text/plain',
+
         success: function (data) {
-            alert("data was successfully updated");
+            alert("Checking out")
         },
-        error: function (data) {
-            alert("Error while fetching data.");
+        error: function (jqXHR, textStatus, errorThrown) { //on error, throw an alert
+            alert("Error while fetching data."+textStatus+errorThrown);
         }
     });
-
 }

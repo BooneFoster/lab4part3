@@ -24,7 +24,7 @@ function fetchProductList() {
 
         success: function (data) { //on success calls this functions and passes the API response as the data parameter.
             productList='';
-            itemCount = 0;
+
             $.each(data['data']['List'], function(i, item) {
 
                 //this is HTML code that is reactively added to the page, your TODO solutions do not need this.
@@ -50,10 +50,10 @@ function fetchProductList() {
                     '            </div>\n' +
                     '        </div>';
                 productList=productList+productListAdd;
-                itemCount++;
+
             });
             $('#items').html(productList);
-            $('#numitems').html(itemCount + ' items');
+
         },
         error: function (data) { //on error, alert the user.
             alert("Error while fetching data.");
@@ -164,62 +164,47 @@ function fetchComments($id) {
 
 function setComment($id) {
 
-    //TODO complete implementation using the product id
-    //alert("app.js/setComment() not implemented")
-
     //HINT
     //Take note of how the Ajax call in app.js/fetchComments() posts a GET request to corresponding API endpoint.
     //Look at the Microservice API Documentation and find out the appripriate type of request for this action.
-    var comment = $('#message-text').val();
-    var score = $('#score').val();
-
     $.ajax({
         url: Url+'SetComment',
         type: 'post',
         dataType: 'json',
-        data: JSON.stringify({"product_id":$id,"comment":comment,"score":score}), //the json is defined here using javascript's dictionary syntax.
+        data: JSON.stringify({"product_id":$id, 
+                "comment":$('#message-text').val(),
+                "score":$('#score').val()}),  
         contentType: 'text/plain',
 
-        success: function (data) { //on success
-            //reactive HTML that depends on the contents od the returned data
-            alert("Comment successfully submitted!");
-
+        success: function (data) {
+            alert("Comment added.")
         },
-        error: function (data) { //on error, throw an alert
-            alert("Error while fetching data.");
+        error: function (jqXHR, textStatus, errorThrown) { //on error, throw an alert
+            alert("Error while fetching data."+textStatus+errorThrown);
         }
     });
-
 }
 
 function addToCart($id) {
 
     //TODO complete implementation using the product id
-    //alert("app.js/addToCart() not implemented")
-    let email =$.trim($('#email').val());
-    if( email !='' ) {
-        sessionStorage.setItem('email', email); //setItem 'email' in sessionStorage to be the user's email. You can access sessionStorage by sessionStorage.getItem().
-    } else {
-        alert("Please enter your email at top of page."); //alert user since email is empty
-    }
 
     $.ajax({
         url: Url+'AddToCart',
         type: 'post',
         dataType: 'json',
-        data: JSON.stringify({"product_id":$id,"email":email}), //the json is defined here using javascript's dictionary syntax.
+        data: JSON.stringify({"product_id":$id, 
+                "email":$('#email').val()}),  
         contentType: 'text/plain',
 
-        success: function (data) { //on success
-            //reactive HTML that depends on the contents od the returned data
-            alert("Item successfully added to cart"); //alert user since email is empty
-
+        success: function (data) {
+            toShoppingCart()
+            alert("Added to cart.")
         },
-        error: function (data) { //on error, throw an alert
-            alert("Error while fetching data.");
+        error: function (jqXHR, textStatus, errorThrown) { //on error, throw an alert
+            alert("Error while fetching data."+textStatus+errorThrown);
         }
     });
-
 }
 
 function toShoppingCart(){
@@ -232,6 +217,19 @@ function toShoppingCart(){
         window.location.href = './cart.html'; //redirect to the shopping cart page
     } else {
         alert("Please enter your email at top of page."); //alert user since email is empty
+    }
+}
+
+function existingCustomer() {
+    let email = $.trim($('#email').val()); //gets the user's email
+
+    //email validation
+
+    if (email != '') {
+        sessionStorage.setItem('email', email); //setItem 'email' in sessionStorage to be the user's email. You can access sessionStorage by sessionStorage.getItem().
+        //window.location.href = './cart.html'; //redirect to the shopping cart page
+    } else {
+        alert("Are you an existing customer? Please enter your email!"); //alert user since email is empty
     }
 }
 
